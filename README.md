@@ -2,66 +2,109 @@
 
 API for message service
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 License: MIT
 
-## Settings
-
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
 
 ## Basic Commands
 
-### Setting Up Your Users
+### Environmnet
 
--   To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+important the env_file section
 
--   To create a **superuser account**, use this command:
+```
+.envs
+├── .local
+│   ├── .django
+│   └── .postgres
+└── .production
+    ├── .django
+    └── .postgres
+```
 
-        $ python manage.py createsuperuser
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+### Development
 
-### Type checks
-
-Running type checks with mypy:
-
-    $ mypy message_service
-
-### Test coverage
-
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+``` bash
+docker-compose -f local.yml build
+docker-compose up
+docker-compose -f local.yml run --rm django python manage.py migrate
+docker-compose -f local.yml run --rm django python manage.py createsuperuser
+```
 
 #### Running tests with pytest
 
-    $ pytest
+    $ docker-compose -f local.yml run --rm django pytest
 
-### Live reloading and Sass CSS compilation
-
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
-
-### Celery
-
-This app comes with Celery.
-
-To run a celery worker:
-
-``` bash
-cd message_service
-celery -A config.celery_app worker -l info
+### Docker Containers
+```
+Django
+Celery_beat
+Celery_worker
+Flower
+Redis
+Prometheus
+Grafana
+Postgres
 ```
 
-Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
+## Основное задание
 
-## Deployment
+### Endpoints
 
-The following details how to deploy this application.
+```json
+{
+    "users": "http://127.0.0.1:8000/api/users/",
+    "clients": "http://127.0.0.1:8000/api/clients/",
+    "mailing": "http://127.0.0.1:8000/api/mailing/",
+    "messages": "http://127.0.0.1:8000/api/messages/",
+    "documentacion": "http://127.0.0.1:8000/api/docs/",
+    "admin":"http://127.0.0.1:8000/admin/"
+}
+```
 
-### Docker
+После создания новой рассылки  (ПОСТ на "http://127.0.0.1:8000/api/mailing/"), если текущее время больше времени начала и меньше времени окончания - должны быть выбраны из справочника все клиенты, которые подходят под значения фильтра, указанного в этой рассылке и запущена отправка для всех этих клиентов.
 
-See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+Если создаётся рассылка с временем старта в будущем - отправка  стартует автоматически по наступлению этого времени без дополнительных действий со стороны пользователя системы.
+
+По ходу отправки сообщений должна собираться статистика через Flower на http://127.0.0.1:5555/ и Grafana на http://127.0.0.1:3000/ по каждому сообщению для последующего формирования отчётов .
+
+Проблемы с внешним сервисом не должны влиять на стабильность работы разрабатываемого сервиса рассылок.
+
+## Дополнительные задания
+
+### 1.Организовать тестирование написанного кода
+
+Pytest для тестов и FactoryBoy для создания данных
+
+    $ docker-compose -f local.yml run --rm django pytest
+
+### 2.Обеспечить автоматическую сборку/тестирование с помощью GitLab CI
+
+  [.gitlab-ci.yml](https://github.com/Kubiniet/Mailing-messages/blob/main/.gitlab-ci.yml)
+
+### 3.Подготовить docker-compose для запуска всех сервисов проекта одной командой
+
+Именно разработал всё под [local.yml](https://github.com/Kubiniet/Mailing-messages/blob/main/local.yml)
+
+### 4 делать так, чтобы по адресу /docs/ открывалась страница со Swagger UI и в нём отображалось описание разработанного 
+
+APDocumentation of API endpoints of Message Service 
+  http://127.0.0.1:8000/api/docs/
+  
+### 5. реализовать администраторский Web UI для управления рассылками и получения статистики по отправленным сообщениям
+
+Django admin может использовать модели для автоматического создания части сайта, предназначенной для создания, просмотра, обновления и удаления записей.Можем создать рассылки и отправить те которые еще не отправленны
+  http://127.0.0.1:8000/admin/
+  
+  
+### 9.Задержки в работе внешнего сервиса никак не должны оказывать влияние на работу сервиса рассылок.
+
+Сделал систему очередей с Redis и Celery, а обработку всех ошибок
+
+### 10.реализовать отдачу метрик в формате prometheus и задокументировать эндпоинты и экспортируемые метрики
+
+Запускал prometheus http://127.0.0.1:9090 в контейнере Докера с интеграцией grafana http://127.0.0.1:3000/
+
+[prometheus.yml](https://github.com/Kubiniet/Mailing-messages/blob/main/prometheus.yml)
