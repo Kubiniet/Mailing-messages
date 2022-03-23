@@ -13,6 +13,15 @@ from .serializers import ClientSerializer, MailingListSerializer, MessageSeriali
 
 
 class ClientsViewSet(viewsets.GenericViewSet):
+    """Endpoint for the clients
+
+    Args:
+        viewsets (_type_): _description_
+
+    Returns:
+        _type_: Response, status_code
+    """
+
     model = Client
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
@@ -82,6 +91,15 @@ class ClientsViewSet(viewsets.GenericViewSet):
 
 
 class MailingViewSet(viewsets.GenericViewSet):
+    """Endpoint for mailing
+
+    Args:
+        viewsets (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+
     model = MailingList
     queryset = MailingList.objects.all()
     serializer_class = MailingListSerializer
@@ -200,7 +218,7 @@ class MailingViewSet(viewsets.GenericViewSet):
 
 class MessageViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
-    A simple ViewSet for viewing and editing accounts.
+    A simple ViewSet for list the messages.
     """
 
     model = Message
