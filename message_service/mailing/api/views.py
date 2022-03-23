@@ -1,6 +1,7 @@
 import datetime
 
 from celery.result import AsyncResult
+from django.http import JsonResponse
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
@@ -134,7 +135,7 @@ class MailingViewSet(viewsets.GenericViewSet):
                             mailing.id, schedule.clocked_time
                         ),
                         task="message_service.mailing.tasks.send_messages_now_task",
-                        args=(mailing_id),
+                        args=JsonResponse([mailing_id]),
                         one_off=True,
                     )
                     return Response(
