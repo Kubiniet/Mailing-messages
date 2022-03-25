@@ -3,6 +3,11 @@ import os
 import sys
 from pathlib import Path
 
+import django.http.request
+from django.utils.regex_helper import _lazy_re_compile
+
+django.http.request.host_validation_re = _lazy_re_compile(r"[a-zA-z0-9.:]*")
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
