@@ -11,7 +11,7 @@ License: MIT
 
 ### Environmnet
 =======
->>>>>>> 79281d43952f1d66c3552092b37af07f6e4ab47f
+
 
 important the env_file section
 
@@ -36,7 +36,6 @@ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 #### Running tests with pytest
 
-<<<<<<< HEAD
     $ docker-compose -f local.yml run --rm django pytest
 
 ### Docker Containers
