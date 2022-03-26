@@ -94,10 +94,11 @@ class MailingViewSet(viewsets.GenericViewSet):
     """Endpoint for mailing
 
     Args:
-        viewsets (_type_): _description_
+        viewsets (_type_): get,post
 
     Returns:
-        _type_: _description_
+         str: status message
+         code: status code
     """
 
     model = MailingList
@@ -153,7 +154,7 @@ class MailingViewSet(viewsets.GenericViewSet):
                             mailing.id, schedule.clocked_time
                         ),
                         task="message_service.mailing.tasks.send_messages_now_task",
-                        args=JsonResponse([mailing_id]),
+                        args=JsonResponse([mailing_id], safe=False),
                         one_off=True,
                     )
                     return Response(
