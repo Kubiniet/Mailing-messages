@@ -6,7 +6,6 @@ API for message service
 
 License: MIT
 
-<<<<<<< HEAD
 ## Basic Commands
 
 ### Environmnet
