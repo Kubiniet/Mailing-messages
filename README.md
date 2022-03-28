@@ -10,6 +10,7 @@ License: MIT
 
 ### Environmnet
 
+
 important the env_file section
 
 ```
@@ -37,29 +38,59 @@ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 ### Docker Containers
 
+
+- Django
+- Celery_beat
+- Celery_worker
+- Flower
+- Redis
+- Prometheus
+- Grafana
+- Postgres
+- cAdvisor
+- node_exporter
+- traefik
+
+### Deployment
+
+
+```bash
+docker-compose -f production.yml build
+docker-compose up -d
 ```
-Django
-Celery_beat
-Celery_worker
-Flower
-Redis
-Prometheus
-Grafana
-Postgres
-```
+
+**django**: API running behind Gunicorn;
+
+**postgres:** PostgreSQL database with the application’s relational data;
+
+**redis:** Redis instance for caching;
+
+**traefik:** Traefik reverse proxy with HTTPS on by default.
+
+**celeryworker:** running a Celery worker process;
+
+**celerybeat:** running a Celery beat process;
+
+**flower:** running Flower.
+
+
+
 
 ## Основное задание
 
 ### Endpoints
 
 ```json
+
 {
   "users": "http://127.0.0.1:8000/api/users/",
   "clients": "http://127.0.0.1:8000/api/clients/",
   "mailing": "http://127.0.0.1:8000/api/mailing/",
   "messages": "http://127.0.0.1:8000/api/messages/",
   "documentacion": "http://127.0.0.1:8000/api/docs/",
-  "admin": "http://127.0.0.1:8000/admin/"
+  "admin": "http://127.0.0.1:8000/admin/",
+  "flower": "http://127.0.0.1:5555/",
+  "Grafana": "http://127.0.0.1:3000/",
 }
 ```
 
