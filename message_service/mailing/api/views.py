@@ -34,8 +34,9 @@ class ClientsViewSet(viewsets.GenericViewSet):
 
     def list(self, request):
         data = self.get_queryset()
+        count = len(data)
         data = self.get_serializer(data, many=True)
-        data = {"total": self.get_queryset().count(), "rows": data.data}
+        data = {"total": count, "rows": data.data}
         return Response(data)
 
     def create(self, request):
@@ -113,8 +114,9 @@ class MailingViewSet(viewsets.GenericViewSet):
 
     def list(self, request):
         data = self.get_queryset()
+        count = len(data)
         data = self.get_serializer(data, many=True)
-        data = {"total": self.get_queryset().count(), "rows": data.data}
+        data = {"total": count, "rows": data.data}
         return Response(data)
 
     def create(self, request):

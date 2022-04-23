@@ -13,7 +13,8 @@ from .models import Client, MailingList, Message
 
 @celery_app.task()
 def send_messages_now_task(mailing_id):
-    """Task take mailind id and send a request.Post to the external API
+    """
+    Task take mailind id and send a request.Post to the external API
 
     Args:
         mailing_id (int): _description_
@@ -43,7 +44,7 @@ def send_messages_now_task(mailing_id):
 
             url = "https://probe.fbrq.cloud/v1/send/{}".format(message.id)
             r = requests.request("POST", url, headers=headers, data=payload, timeout=10)
-            print(r.text)
+
             message.sending_status = True
             message.save()
             r.raise_for_status()

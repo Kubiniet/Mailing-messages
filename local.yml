@@ -42,22 +42,6 @@ services:
     env_file:
       - ./.envs/.local/.postgres
 
-  docs:
-    image: message_service_local_docs
-    container_name: message_service_local_docs
-    build:
-      context: .
-      dockerfile: ./compose/local/docs/Dockerfile
-    env_file:
-      - ./.envs/.local/.django
-    volumes:
-      - ./docs:/docs:z
-      - ./config:/app/config:z
-      - ./message_service:/app/message_service:z
-    ports:
-      - "9000:9000"
-    command: /start-docs
-
   redis:
     image: redis:6
     container_name: message_service_local_redis
@@ -139,6 +123,7 @@ services:
       - 9100:9100
     command:
       - "--path.rootfs=/host"
+      - "--no-collector.powersupplyclass"
     pid: host
     volumes:
       - "/:/host:ro,rslave"
